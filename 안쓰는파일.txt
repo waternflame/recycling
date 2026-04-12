@@ -1,0 +1,160 @@
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
+import torch
+import torch.nn as nn
+import cv2
+import numpy as np
+import io
+from PIL import Image
+
+app = FastAPI()
+
+# GPU 사용 가능 여부 확인
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# 1. PyTorch CNN 모델 정의 (train.py와 동일)
+class CanPetCNN(nn.Module):
+    def __init__(self):
+        super(CanPetCNN, self).__init__()
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.pool3 = nn.MaxPool2d(2, 2)
+        
+        self.fc1 = nn.Linear(128 * 8 * 8, 128)
+        self.dropout = nn.Dropout(0.5)
+        self.fc2 = nn.Linear(128, 1)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self, x):
+        x = self.relu(self.conv1(x))
+        x = self.pool1(x)
+        
+        x = self.relu(self.conv2(x))
+        x = self.pool2(x)
+        
+        x = self.relu(self.conv3(x))
+        x = self.pool3(x)
+        
+        x = x.view(x.size(0), -1)
+        x = self.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.sigmoid(self.fc2(x))
+        
+        return x
+
+# 학습된 모델 로드
+def load_model():
+    model = CanPetCNN().to(device)
+    try:
+        model.load_state_dict(torch.load('can_pet_model.pth', map_location=device))
+        model.eval()
+        print("✅ 모델 로드 성공: can_pet_model.pth")
+        return model
+    except:
+        print("❌ 모델을 찾을 수 없습니다. 먼저 train.py를 실행하세요.")
+        return None
+
+model = load_model()
+
+# 이미지 전처리 함수
+def preprocess_image_for_prediction(image_bytes):
+    """
+    업로드된 이미지를 흑백 + 엣지 감지로 전처리
+    """
+    image = Image.open(io.BytesIO(image_bytes))
+    img_array = np.array(image.convert('L'))  # 흑백으로 변환
+    
+    img_resized = cv2.resize(img_array, (64, 64))
+    img_blurred = cv2.GaussianBlur(img_resized, (5, 5), 0)
+    edges = cv2.Canny(img_blurred, 30, 100)
+    
+    # 모델 입력 형태로 정규화 (0~1 사이 값, (1, 1, 64, 64))
+    input_data = torch.FloatTensor(edges).reshape(1, 1, 64, 64) / 255.0
+    
+    return input_data.to(device)
+
+
+@app.get("/")
+def home():
+    return {
+        "message": "🤖 캔 vs 패트 분류 모델 API (PyTorch)",
+        "endpoints": {
+            "predict": "POST /predict - 이미지 파일 업로드하여 분류",
+            "info": "GET /info - 모델 정보 조회"
+        }
+    }
+
+
+@app.get("/info")
+def model_info():
+    if model is None:
+        return {"status": "error", "message": "모델이 로드되지 않았습니다."}
+    
+    return {
+        "status": "success",
+        "model": "캔 vs 패트 분류 CNN (PyTorch)",
+        "framework": "PyTorch",
+        "device": str(device),
+        "classes": {
+            "0": "캔 (Can)",
+            "1": "패트 (PET)"
+        },
+        "input_size": "64x64 흑백 엣지 감지 이미지",
+        "preprocessing": "Canny Edge Detection 적용"
+    }
+
+
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    """
+    이미지 파일을 업로드하면 캔 또는 패트로 분류
+    """
+    if model is None:
+        return JSONResponse(
+            status_code=500,
+            content={"error": "모델이 로드되지 않았습니다. 먼저 train.py를 실행하세요."}
+        )
+    
+    try:
+        image_data = await file.read()
+        input_data = preprocess_image_for_prediction(image_data)
+        
+        # 모델로 예측
+        with torch.no_grad():
+            prediction = model(input_data)
+        
+        confidence = float(prediction[0][0].cpu().numpy())
+        
+        # 결과 해석 (시그모이드 출력)
+        if confidence < 0.5:
+            result_class = "캔 (Can)"
+            result_code = 0
+            confidence_pct = (1 - confidence) * 100
+        else:
+            result_class = "패트 (PET)"
+            result_code = 1
+            confidence_pct = confidence * 100
+        
+        return {
+            "file_name": file.filename,
+            "prediction": result_class,
+            "classification": result_code,
+            "confidence": f"{confidence_pct:.2f}%",
+            "raw_value": f"{confidence:.4f}"
+        }
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=400,
+            content={"error": f"이미지 처리 중 오류가 발생했습니다: {str(e)}"}
+        )
+
+
+    전 test.py ----------------------------------------------------------------------------------------------------------------------------
+        

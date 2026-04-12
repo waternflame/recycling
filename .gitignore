@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+
+# VS Code / Visual Studio
+.vs/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local runtime artifacts
+classification.db
