@@ -6,3 +6,4 @@ torch
 torchvision
 opencv-python
 pillow
+paho-mqtt

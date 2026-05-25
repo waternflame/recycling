@@ -5,7 +5,6 @@ import numpy as np
 import os
 from PIL import Image
 from tqdm import tqdm
-import database
 import shutil
 
 # GPU 확인
@@ -144,11 +143,6 @@ def predict_now(img_path):
 
     label, confidence = classify_image(model, img_path, confidence_threshold=0.7)
 
-    # API 경로에서 바로 호출될 때를 대비해 테이블 존재를 보장
-    database.init_db()
-
-    database.save_results([{'file_path': img_path, 'label': label}])
-
     return int(label)
 
 # ============================================
@@ -159,8 +153,6 @@ if __name__ == "__main__":
     TEST_FOLDER = r"d:\python\testset"  # 테스트할 사진 폴더
     CONFIDENCE_THRESHOLD = 0.7  # 신뢰도 임계값
 
-    database.init_db()
-    
     print("=" * 60)
     print("🔍 이미지 분류 시작")
     print("=" * 60)
@@ -200,8 +192,6 @@ if __name__ == "__main__":
         img_path = os.path.join(TEST_FOLDER, filename)
         label, confidence = classify_image(model, img_path, CONFIDENCE_THRESHOLD)
 
-        database.save_results([{'file_path': img_path, 'label': label}])
-
         results.append({
             'file_path': img_path,
             'filename': filename,
@@ -226,5 +216,5 @@ if __name__ == "__main__":
     print(f"💾 결과 데이터: {result}")
 
 
-    print(f"✅ DB 저장 완료: {result['filename']} -> {result['label']}")
+    print(f"✅ 분류 완료 로그: {result['filename']} -> {result['label']}")
 
