@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이메일 찾기</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-container { background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 350px; text-align: center; }
+        h2 { margin-bottom: 12px; color: #333333; }
+        p { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.4; }
+        input { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        input:focus { border-color: #dc3545; outline: none; }
+        button { width: 100%; padding: 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #bd2130; }
+        .links { margin-top: 20px; display: flex; justify-content: center; font-size: 13px; }
+        .links a { color: #666666; text-decoration: none; }
+        .links a:hover { text-decoration: underline; color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>이메일 찾기</h2>
+        <p>가입할 때 선택했던 본인 확인 질문을 고르고<br>올바른 답변을 입력해주시면 이메일을 찾을 수 있습니다.</p>
+        <form>
+            <input type="email" placeholder="가입한 이메일 주소 입력" required>
+            <button type="submit">비밀번호 재설정 이메일 전송</button>
+        </form>
+        <div class="links">
+            <!-- 💡 index.html로 변경 -->
+            <a href="index.html">로그인 화면으로 돌아가기</a>
+        </div>
+    </div>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('입력하신 이메일로 임시 비밀번호를 발송했습니다.');
+            // 💡 index.html로 변경
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
