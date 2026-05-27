@@ -5,98 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
     <style>
-        /* 기본 배경 및 중앙 정렬 */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+        body { font-family: 'Arial', sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-container { background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 380px; text-align: center; }
+        h2 { margin-bottom: 24px; color: #333333; }
+        
+        /* input 태그 스타일 */
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 14px; }
+        input:focus { border-color: #28a745; }
+        
+        /* 비밀번호 입력창 아래 여백 넓히기 */
+        .password-input { margin-bottom: 20px; }
 
-        /* 로그인 박스 스타일 */
-        .login-container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
-
-        h2 {
-            margin-bottom: 24px;
-            color: #333333;
-        }
-
-        /* 입력창 스타일 */
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-        /* 버튼 스타일 */
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        /* 링크 스타일 */
-        .links {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-        }
-
-        .links a {
-            color: #666666;
-            text-decoration: none;
-        }
-
-        .links a:hover {
-            text-decoration: underline;
-            color: #007bff;
-        }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #218838; }
+        
+        /* 하단 링크 영역 스타일 변경 (가로 정렬 및 구분선) */
+        .links { margin-top: 20px; display: flex; justify-content: center; font-size: 13px; gap: 10px; color: #ccc; }
+        .links a { color: #666666; text-decoration: none; }
+        .links a:hover { text-decoration: underline; color: #28a745; }
     </style>
 </head>
 <body>
-    <!--브라우저에 나타나는 내용들-->
-    <div class=""login-container">
+    <div class="login-container">
         <h2>로그인</h2>
-        <form action="#">
-            <input type="email" placeholder="이메일 주소를 입력하시오" required>
-            <input type="password" placeholder="비밀번호를 입력하시오" required>
+        
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="이메일 주소 입력" required>
+            <input type="password" id="loginPassword" class="password-input" placeholder="비밀번호 입력" required>
+            
             <button type="submit">로그인</button>
         </form>
+        
         <div class="links">
-            <a href="forgot-email.html">이메일 찾기</a>
-            <a href="forgot-password.html">비밀번호 찾기</a>
             <a href="register.html">회원가입</a>
+            <span>|</span>
+            <a href="find-password.html">비밀번호 찾기</a>
         </div>
     </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // 임시 로그인 검증 로직 (실제 서비스에서는 서버와 통신해야 합니다)
+            if (email && password) {
+                alert('로그인이 완료되었습니다! 메인 페이지로 이동합니다.');
+                // window.location.href = 'main.html'; // 로그인 성공 후 이동할 메인 페이지 경로
+            }
+        });
+    </script>
 </body>
 </html>
