@@ -9,17 +9,41 @@
         .login-container { background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 380px; text-align: center; }
         h2 { margin-bottom: 24px; color: #333333; }
         
-        /* input 태그 스타일 */
         input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 14px; }
         input:focus { border-color: #28a745; }
         
-        /* 비밀번호 입력창 아래 여백 넓히기 */
-        .password-input { margin-bottom: 20px; }
+        /* 글자 버튼을 위한 박스 레이아웃 */
+        .password-container {
+            position: relative;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .password-container input {
+            margin-bottom: 0;
+            padding-right: 60px; /* 글자가 버튼과 겹치지 않게 여백 확대 */
+        }
+        /* 텍스트 형태의 버튼 스타일 */
+        .password-container .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            font-size: 12px;
+            background: #edeec4;
+            padding: 4px 8px;
+            border-radius: 3px;
+            user-select: none;
+        }
+        .password-container .toggle-btn:hover {
+            background: #28a745;
+            color: white;
+        }
 
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #218838; }
+        button[type="submit"] { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button[type="submit"]:hover { background-color: #218838; }
         
-        /* 하단 링크 영역 스타일 변경 (가로 정렬 및 구분선) */
         .links { margin-top: 20px; display: flex; justify-content: center; font-size: 13px; gap: 10px; color: #ccc; }
         .links a { color: #666666; text-decoration: none; }
         .links a:hover { text-decoration: underline; color: #28a745; }
@@ -31,29 +55,45 @@
         
         <form id="loginForm">
             <input type="email" id="loginEmail" placeholder="이메일 주소 입력" required>
-            <input type="password" id="loginPassword" class="password-input" placeholder="비밀번호 입력" required>
             
-            <button type="submit">로그인</button>
+            <div class="password-container">
+                <input type="password" id="loginPassword" placeholder="비밀번호 입력" required>
+                <!-- 아이콘 대신 텍스트 버튼 사용 -->
+                <span class="toggle-btn" id="togglePassword">보기</span>
+            </div>
+            
+            <button type="submit">회원 로그인</button>
         </form>
         
         <div class="links">
             <a href="register.html">회원가입</a>
             <span>|</span>
-            <a href="find-password.html">비밀번호 찾기</a>
+            <a href="forgot-email.html">이메일 찾기</a>
+            <span>|</span>
+            <a href="forgot-password.html">비밀번호 찾기</a>
         </div>
     </div>
 
     <script>
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('loginPassword');
+
+        togglePassword.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                this.textContent = '숨기기'; // 글자 변경
+            } else {
+                passwordInput.type = 'password';
+                this.textContent = '보기'; // 글자 변경
+            }
+        });
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지
-            
+            e.preventDefault(); 
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
-            // 임시 로그인 검증 로직 (실제 서비스에서는 서버와 통신해야 합니다)
             if (email && password) {
                 alert('로그인이 완료되었습니다! 메인 페이지로 이동합니다.');
-                // window.location.href = 'main.html'; // 로그인 성공 후 이동할 메인 페이지 경로
             }
         });
     </script>
