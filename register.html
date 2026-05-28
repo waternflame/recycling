@@ -5,40 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-container { background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 380px; text-align: center; }
-        h2 { margin-bottom: 24px; color: #333333; }
+        /* 로그인 페이지와 완벽히 통일된 기본 시스템 서체 및 배경 설정 */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; 
+            background-color: #f2f4f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; /* 화면 높이에 유연하게 대처 */
+            margin: 0; 
+            -webkit-font-smoothing: antialiased;
+            padding: 20px 0; /* 모바일/화면이 작을 때 위아래 여백 확보 */
+            box-sizing: border-box;
+        }
+
+        /* 둥글고 입체감 있는 카드 레이아웃 */
+        .register-container { 
+            background-color: #ffffff; 
+            padding: 48px 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.03); 
+            width: 360px; 
+            box-sizing: border-box;
+        }
+
+        /* 타이틀 스타일 */
+        h2 { 
+            margin: 0 0 32px 0; 
+            color: #191f28; 
+            font-size: 24px; 
+            font-weight: 700;
+            text-align: left;
+            line-height: 1.4;
+        }
         
-        /* 입력창 텍스트 정렬 및 레이블 스타일 */
-        .form-group { text-align: left; margin-bottom: 14px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: bold; color: #555; font-size: 13px; }
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        /* 입력 폼 및 선택창 공통 스타일 */
+        input, select { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: #f9fafb;
+            border: 1px solid transparent; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 15px; 
+            color: #191f28;
+            outline: none; 
+            transition: all 0.2s ease;
+            /* select 태그의 기본 화살표 스타일을 세련되게 다듬기 위한 설정 */
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* select 태그용 화살표 아이콘 배경 추가 (옵션) */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            cursor: pointer;
+        }
+
+        input:hover, select:hover {
+            background-color: #f2f4f6;
+        }
+
+        input:focus, select:focus { 
+            background-color: #ffffff;
+            border-color: #3182f6; 
+            box-shadow: 0 0 0 1px #3182f6;
+        }
+
+        /* 토스 시그니처 블루 버튼 */
+        button[type="submit"] { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: #3182f6; 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(49, 130, 246, 0.2);
+            transition: all 0.2s ease; 
+            margin-top: 12px;
+        }
+
+        button[type="submit"]:hover { 
+            background-color: #1b64da; 
+            box-shadow: 0 6px 16px rgba(49, 130, 246, 0.3);
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.98);
+        }
         
-        /* input과 select 태그 스타일 통합 */
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
-        input:focus, select:focus { border-color: #28a745; }
-        
-        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #218838; }
-        .links { margin-top: 20px; display: flex; justify-content: center; font-size: 13px; }
-        .links a { color: #666666; text-decoration: none; }
-        .links a:hover { text-decoration: underline; color: #28a745; }
+        /* 하단 링크 영역 */
+        .links { 
+            margin-top: 28px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            font-size: 13px; 
+        }
+
+        .links a { 
+            color: #4e5968; 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .links a:hover { 
+            color: #3182f6; 
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>회원가입</h2>
+    <div class="register-container">
+        <h2>회원가입을 환영합니다</h2>
         
-        <!-- 충돌 방지를 위해 action="#" 속성을 제거했습니다 -->
         <form id="registerForm">
-            <input type="text" placeholder="이름 입력" required style="margin-bottom: 14px;">
-            <input type="email" placeholder="이메일 주소 입력" required style="margin-bottom: 14px;">
-            <input type="password" placeholder="비밀번호 입력" required style="margin-bottom: 20px;">
-            
-            <!-- 💡 본인 확인 질문 선택 칸 추가 -->
-            <div class="form-group">
-                <label for="question">본인 확인 질문</label>
+            <!-- 이름 입력창 -->
+            <div class="input-group">
+                <input type="text" id="regName" placeholder="이름" required>
+            </div>
+
+            <!-- 본인확인 질문 선택창 (오타 교정 및 클래스명 통일) -->
+            <div class="input-group">
                 <select id="question" required>
-                    <option value="">질문을 선택해주세요</option>
+                    <option value="" disabled selected>본인확인 질문을 선택해주세요</option>
                     <option value="q1">가장 기억에 남는 선생님 성함은?</option>
                     <option value="q2">처음 키웠던 반려동물의 이름은?</option>
                     <option value="q3">받았던 선물 중 가장 기억에 남는 것은?</option>
@@ -49,42 +149,64 @@
                     <option value="q8">어렸을 때 별명은?</option>
                     <option value="q9">처음 입학한 학교의 이름은?</option>
                     <option value="q10">인생에서 가장 기억에 남는 여행지는?</option>
-                    <option value="q11">가장 즐겨듣는 음악은?</option>
+                    <option value="q11">가장 즐겨듣는 음악의 제목은?</option>
                 </select>
             </div>
-            
-            <!-- 💡 답변 입력 칸 추가 -->
-            <div class="form-group">
-                <label for="answer">답변 입력</label>
-                <input type="text" id="answer" placeholder="답변을 입력하세요" required>
+
+            <!-- 답변 입력 칸 추가 (클래스명 통일 및 레이아웃 최적화) -->
+            <div class="input-group">
+                <input type="text" id="answer" placeholder="질문에 대한 답변을 입력하세요" required>
+            </div>
+
+            <!-- 이메일 입력창 -->
+            <div class="input-group">
+                <input type="email" id="regEmail" placeholder="이메일 주소" required>
             </div>
             
-            <button type="submit">가입하기</button>
+            <!-- 비밀번호 입력창 -->
+            <div class="input-group">
+                <input type="password" id="regPassword" placeholder="비밀번호 (8자 이상)" minlength="8" required>
+            </div>
+
+            <!-- 비밀번호 확인 입력창 -->
+            <div class="input-group">
+                <input type="password" id="regPasswordConfirm" placeholder="비밀번호 확인" required>
+            </div>
+            
+            <button type="submit">회원가입하기</button>
         </form>
         
         <div class="links">
-            <a href="index.html">이미 계정이 있으신가요? 로그인하기</a>
+            <a href="index.html">이미 계정이 있으신가요? 로그인</a>
         </div>
     </div>
 
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지
+            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지 코드
             
+            const name = document.getElementById('regName').value.trim();
             const question = document.getElementById('question').value;
             const answer = document.getElementById('answer').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
             
-            if (question === "") {
-                alert("본인 확인 질문을 선택해주세요.");
+            // 본인확인 질문 선택 여부 확인
+            if (!question) {
+                alert('본인확인 질문을 선택해 주세요.');
                 return;
             }
-            if (answer === "") {
-                alert("답변을 입력해주세요.");
+
+            // 비밀번호 일치 여부 검증
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 서로 일치하지 않습니다. 다시 확인해 주세요.');
                 return;
             }
             
-            alert('회원가입이 완료되었습니다! 로그인 화면으로 이동합니다.');
-            window.location.href = 'index.html'; // 안전하게 index.html로 이동
+            // 모든 검증 통과 시 성공 메시지
+            alert(`${name}님, 회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.`);
+            window.location.href = 'login.html'; 
         });
     </script>
 </body>
