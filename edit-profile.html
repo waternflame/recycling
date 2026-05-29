@@ -28,7 +28,7 @@
             width: 360px; 
         }
 
-        /* 타이틀 스타일: 왼쪽 정렬 및 굵은 고딕 */
+        /* 타이틀 스타일 */
         h2 { 
             margin: 0 0 12px 0; 
             color: #191f28; 
@@ -75,7 +75,6 @@
             box-shadow: 0 0 0 1px #3182f6;
         }
 
-        /* 비밀번호 확인 입력창 등 하단 마진 최적화 */
         .last-input {
             margin-bottom: 24px;
         }
@@ -104,7 +103,7 @@
             transform: scale(0.98);
         }
 
-        /* [요청 반영] 이전으로 돌아가기 버튼 (포인트 칸과 대칭되는 둥글고 깔끔한 스타일) */
+        /* 이전으로 돌아가기 버튼 */
         .btn-back {
             display: block;
             width: 100%;
@@ -137,49 +136,71 @@
         <h2>내 정보 변경</h2>
         
         <form id="editProfileForm">
-            <!-- 1. 닉네임 변경 섹션 -->
+            <!-- 1. 닉네임 변경 섹션 (required 제거) -->
             <div class="section-title">닉네임 변경</div>
             <div class="input-group">
-                <input type="text" id="newNickname" placeholder="새로운 닉네임 입력" required>
+                <input type="text" id="newNickname" placeholder="새로운 닉네임 입력 (선택)">
             </div>
 
-            <!-- 2. 비밀번호 변경 섹션 -->
+            <!-- 2. 비밀번호 변경 섹션 (required 및 minlength 제거 후 스크립트로 검증) -->
             <div class="section-title">비밀번호 변경</div>
             <div class="input-group">
-                <input type="password" id="newPassword" placeholder="새 비밀번호 (8자 이상)" minlength="8" required>
+                <input type="password" id="newPassword" placeholder="새 비밀번호 (선택)">
             </div>
             <div class="input-group last-input">
-                <input type="password" id="newPasswordConfirm" placeholder="새 비밀번호 확인" required>
+                <input type="password" id="newPasswordConfirm" placeholder="새 비밀번호 확인">
             </div>
             
-            <!-- 수정 완료 버튼 -->
             <button type="submit">변경 내용 저장</button>
-            
-            <!-- [요청 반영] 이전으로 돌아가기 버튼 (a 태그 형태로 main.html 매핑) -->
             <a href="main.html" class="btn-back">이전으로 돌아가기</a>
         </form>
     </div>
 
     <script>
-        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지
-            
-            const nickname = document.getElementById('newNickname').value.trim();
-            const password = document.getElementById('newPassword').value;
-            const passwordConfirm = document.getElementById('newPasswordConfirm').value;
-            
-            // 비밀번호 대조 검증
+        <!-- edit-profile.html 의 기존 코드는 그대로 두고, 맨 아래 <script> 영역만 아래 내용으로 전체 교체해 주세요 -->
+    // 페이지가 처음 열릴 때, 기존에 저장된 닉네임이 있다면 입력창에 미리 보여줍니다.
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedNickname = localStorage.getItem('userNickname');
+        if (savedNickname) {
+            document.getElementById('newNickname').placeholder = `현재 닉네임: ${savedNickname}`;
+        }
+    });
+
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+        e.preventDefault(); 
+        
+        const nickname = document.getElementById('newNickname').value.trim();
+        const password = document.getElementById('newPassword').value;
+        const passwordConfirm = document.getElementById('newPasswordConfirm').value;
+        
+        if (!nickname && !password && !passwordConfirm) {
+            alert('변경할 내용을 입력해 주세요.');
+            return;
+        }
+
+        let successMessage = "";
+
+        // [핵심 추가] 닉네임 입력 시 브라우저 로컬 스토리지에 가상 저장
+        if (nickname) {
+            localStorage.setItem('userNickname', nickname);
+            successMessage += `닉네임이 [${nickname}](으)로 변경되었습니다.\n`;
+        }
+
+        if (password || passwordConfirm) {
             if (password !== passwordConfirm) {
                 alert('새 비밀번호가 서로 일치하지 않습니다. 다시 확인해 주세요.');
                 return;
             }
-            
-            // 실제 서비스 시 이곳에서 서버 API(fetch)를 통해 DB 데이터를 변경합니다.
-            alert('개인정보 변경이 성공적으로 완료되었습니다.');
-            
-            // 변경 완료 후 다시 메인 대시보드로 이동
-            window.location.href = 'main.html'; 
-        });
+            if (password.length < 8) {
+                alert('비밀번호는 최소 8자 이상이어야 합니다.');
+                return;
+            }
+            successMessage += "비밀번호가 안전하게 변경되었습니다.\n";
+        }
+        
+        alert(successMessage + '개인정보 변경이 완료되었습니다.');
+        window.location.href = 'main.html'; 
+    });
     </script>
 </body>
 </html>
