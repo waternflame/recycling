@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드</title>
+    <style>
+        /* 기본 스타일 및 배경 설정 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; 
+            background-color: #f2f4f6; 
+            color: #191f28;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 네비게이션 바 디자인 */
+        .navbar {
+            background-color: #ffffff;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e5e8eb;
+        }
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: #3182f6;
+            cursor: pointer;
+        }
+        .navbar .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .navbar .logout-btn {
+            font-size: 13px;
+            color: #8b95a1;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .navbar .logout-btn:hover {
+            color: #f04452;
+        }
+
+        /* 대시보드 메인 레이아웃 구역 */
+        .dashboard-layout {
+            max-width: 768px;
+            margin: 40px auto;
+            padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 공통 카드 컴포넌트 */
+        .dashboard-card {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #4e5968;
+        }
+
+        /* [요청 반영] 1. 상단 프로필 영역 카드 스타일 */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 100%);
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .profile-text .name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #191f28;
+            margin-bottom: 4px;
+        }
+        .profile-text .welcome {
+            font-size: 14px;
+            color: #8b95a1;
+        }
+
+        /* 하단 카드 전용 가로 정렬 컨테이너 */
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* 2. 내 적립 포인트 수치 스타일 */
+        .point-amount {
+            font-size: 22px;
+            font-weight: 700;
+            color: #3182f6;
+        }
+
+        /* [요청 반영] 3. 포인트 카드와 똑같은 모양·크기를 가진 개인정보 변경 카드 버튼 */
+        .btn-card {
+            border: none;
+            outline: none;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        /* 마우스를 올렸을 때 살짝 어두워지는 효과 */
+        .btn-card:hover {
+            background-color: #f9fafb;
+            transform: translateY(-1px);
+            box-shadow: 0 14px 44px rgba(0, 0, 0, 0.04);
+        }
+        /* 클릭 시 꾹 눌리는 모바일 앱 같은 터치 효과 */
+        .btn-card:active {
+            transform: scale(0.99);
+        }
+
+        /* 개인정보 변경 카드 내부의 화살표 아이콘 (포인트 액수와 대칭) */
+        .arrow-icon {
+            font-size: 22px;
+            font-weight: 700;
+            color: #8b95a1;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 네비게이션 바 -->
+    <nav class="navbar">
+        <div class="logo">dashboard</div>
+        <div class="user-menu">
+            <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+        </div>
+    </nav>
+
+    <!-- 대시보드 본문 -->
+    <main class="dashboard-layout">
+        
+        <!-- [복구] 카드 1: 프로필 사진 및 이름 입력 칸 -->
+        <section class="dashboard-card">
+            <div class="profile-section">
+                <div class="profile-img-box">
+                    <div class="profile-img"></div>
+                </div>
+                <div class="profile-text">
+                    <div class="name">홍길동</div>
+                    <div class="welcome">오늘도 좋은 하루 보내세요</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 카드 2: 내 적립 포인트 -->
+        <section class="dashboard-card">
+            <div class="card-container">
+                <span class="card-title">내 적립 포인트</span>
+                <span class="point-amount" id="userPoint">1,250 P</span>
+            </div>
+        </section>
+
+        <!-- [수정완료] 카드 3: 포인트 칸 아래 배치된 동일 크기 형태의 개인정보 변경 버튼 카드 -->
+        <button class="dashboard-card btn-card" onclick="goToEditProfile()">
+            <div class="card-container">
+                <span class="card-title">개인정보 변경</span>
+                <span class="arrow-icon">➔</span>
+            </div>
+        </button>
+
+    </main>
+
+    <script>
+        // 개인정보 변경 카드 클릭 시 수정 화면(페이지)으로 넘어가는 함수
+        function goToEditProfile() {
+            window.location.href = 'edit-profile.html';
+        }
+
+        // 로그아웃 기능
+        function handleLogout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                alert('로그아웃 되었습니다. 로그인 화면으로 이동합니다.');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
