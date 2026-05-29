@@ -58,9 +58,34 @@
             e.preventDefault();
             const question = document.getElementById('question').value;
             const answer = document.getElementById('answer').value.trim();
+            const currentNickname = localStorage.getItem('userNickname');
 
-            alert('본인확인 질문과 답변이 수정되었습니다.');
-            window.location.href = 'main.html';
+            let userUpdated = false;
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                
+                if (key.startsWith('user_')) {
+                    const userData = JSON.parse(localStorage.getItem(key));
+                    
+                    if (userData.name === currentNickname) {
+                        userData.question = question; // 질문 업데이트
+                        userData.answer = answer;     // 답변 업데이트
+                        
+                        localStorage.setItem(key, JSON.stringify(userData)); // 재저장
+                        userUpdated = true;
+                        break;
+                    }
+                }
+            }
+
+            if (userUpdated) {
+                alert('본인확인 질문과 답변이 안전하게 수정되었습니다.');
+                window.location.href = 'main.html'; // 질문은 데이터 키에 영향을 주지 않으므로 메인으로 복귀
+            } else {
+                alert('회원 정보를 찾을 수 없습니다. 다시 로그인해 주세요.');
+                window.location.href = 'index.html';
+            }
         });
     </script>
 </body>
