@@ -183,31 +183,43 @@
 
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지 코드
-            
-            const name = document.getElementById('regName').value.trim();
-            const question = document.getElementById('question').value;
-            const answer = document.getElementById('answer').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
-            
-            // 본인확인 질문 선택 여부 확인
-            if (!question) {
-                alert('본인확인 질문을 선택해 주세요.');
-                return;
-            }
+        e.preventDefault(); 
+        
+        const name = document.getElementById('regName').value.trim();
+        const question = document.getElementById('question').value;
+        const answer = document.getElementById('answer').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+        
+        if (!question) {
+            alert('본인확인 질문을 선택해 주세요.');
+            return;
+        }
 
-            // 비밀번호 일치 여부 검증
-            if (password !== passwordConfirm) {
-                alert('비밀번호가 서로 일치하지 않습니다. 다시 확인해 주세요.');
-                return;
-            }
-            
-            // 모든 검증 통과 시 성공 메시지
-            alert(`${name}님, 회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.`);
-            window.location.href = 'login.html'; 
-        });
+        if (password !== passwordConfirm) {
+            alert('비밀번호가 서로 일치하지 않습니다. 다시 확인해 주세요.');
+            return;
+        }
+        
+        // [가상 가입 로직] 가입 정보를 하나의 객체로 만듭니다.
+        const userData = {
+            name: name,
+            email: email,
+            password: password,
+            question: question,
+            answer: answer
+        };
+
+        // 로컬 스토리지에 이메일을 키(Key)로 사용하여 회원 정보를 문자열로 가상 저장합니다.
+        localStorage.setItem(`user_${email}`, JSON.stringify(userData));
+        
+        // 대시보드에서 이름 연동을 쉽게 하기 위해 '현재 로그인할 유저의 기본 이름'도 세팅합니다.
+        localStorage.setItem('userNickname', name);
+
+        alert(`${name}님, 회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.`);
+        window.location.href = 'index.html'; 
+    });
     </script>
 </body>
 </html>
