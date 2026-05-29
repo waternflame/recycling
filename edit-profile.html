@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보 변경</title>
+    <style>
+        /* 타 페이지와 완벽히 통일된 기본 시스템 서체 및 배경 설정 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; 
+            background-color: #f2f4f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            -webkit-font-smoothing: antialiased;
+            padding: 20px 0;
+        }
+
+        /* 둥글고 입체감 있는 카드 레이아웃 */
+        .edit-container { 
+            background-color: #ffffff; 
+            padding: 48px 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.03); 
+            width: 360px; 
+        }
+
+        /* 타이틀 스타일: 왼쪽 정렬 및 굵은 고딕 */
+        h2 { 
+            margin: 0 0 12px 0; 
+            color: #191f28; 
+            font-size: 24px; 
+            font-weight: 700;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        /* 각 섹션 설명용 서브 타이틀 */
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4e5968;
+            margin: 24px 0 8px 0;
+            text-align: left;
+        }
+        
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        /* 입력 폼 공통 스타일 */
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: #f9fafb;
+            border: 1px solid transparent; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 15px; 
+            color: #191f28;
+            outline: none; 
+            transition: all 0.2s ease;
+        }
+
+        input:hover {
+            background-color: #f2f4f6;
+        }
+
+        input:focus { 
+            background-color: #ffffff;
+            border-color: #3182f6; 
+            box-shadow: 0 0 0 1px #3182f6;
+        }
+
+        /* 비밀번호 확인 입력창 등 하단 마진 최적화 */
+        .last-input {
+            margin-bottom: 24px;
+        }
+
+        /* 메인 행동 버튼 (수정하기) */
+        button[type="submit"] { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: #3182f6; 
+            color: #ffffff; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(49, 130, 246, 0.2);
+            transition: all 0.2s ease; 
+        }
+
+        button[type="submit"]:hover { 
+            background-color: #1b64da; 
+            box-shadow: 0 6px 16px rgba(49, 130, 246, 0.3);
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.98);
+        }
+
+        /* [요청 반영] 이전으로 돌아가기 버튼 (포인트 칸과 대칭되는 둥글고 깔끔한 스타일) */
+        .btn-back {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: #f2f4f6;
+            color: #4e5968;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #e5e8eb;
+            color: #191f28;
+        }
+
+        .btn-back:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h2>내 정보 변경</h2>
+        
+        <form id="editProfileForm">
+            <!-- 1. 닉네임 변경 섹션 -->
+            <div class="section-title">닉네임 변경</div>
+            <div class="input-group">
+                <input type="text" id="newNickname" placeholder="새로운 닉네임 입력" required>
+            </div>
+
+            <!-- 2. 비밀번호 변경 섹션 -->
+            <div class="section-title">비밀번호 변경</div>
+            <div class="input-group">
+                <input type="password" id="newPassword" placeholder="새 비밀번호 (8자 이상)" minlength="8" required>
+            </div>
+            <div class="input-group last-input">
+                <input type="password" id="newPasswordConfirm" placeholder="새 비밀번호 확인" required>
+            </div>
+            
+            <!-- 수정 완료 버튼 -->
+            <button type="submit">변경 내용 저장</button>
+            
+            <!-- [요청 반영] 이전으로 돌아가기 버튼 (a 태그 형태로 main.html 매핑) -->
+            <a href="main.html" class="btn-back">이전으로 돌아가기</a>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 폼 제출 시 브라우저 강제 새로고침 방지
+            
+            const nickname = document.getElementById('newNickname').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const passwordConfirm = document.getElementById('newPasswordConfirm').value;
+            
+            // 비밀번호 대조 검증
+            if (password !== passwordConfirm) {
+                alert('새 비밀번호가 서로 일치하지 않습니다. 다시 확인해 주세요.');
+                return;
+            }
+            
+            // 실제 서비스 시 이곳에서 서버 API(fetch)를 통해 DB 데이터를 변경합니다.
+            alert('개인정보 변경이 성공적으로 완료되었습니다.');
+            
+            // 변경 완료 후 다시 메인 대시보드로 이동
+            window.location.href = 'main.html'; 
+        });
+    </script>
+</body>
+</html>
