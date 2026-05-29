@@ -2,224 +2,110 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <style>
-        /* 로그인 페이지와 완벽히 통일된 기본 시스템 서체 및 배경 설정 */
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, sans-serif; 
-            background-color: #f2f4f6; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; /* 화면 높이에 유연하게 대처 */
-            margin: 0; 
-            -webkit-font-smoothing: antialiased;
-            padding: 20px 0; /* 모바일/화면이 작을 때 위아래 여백 확보 */
-            box-sizing: border-box;
-        }
-
-        /* 둥글고 입체감 있는 카드 레이아웃 */
+        body { font-family: -apple-system, sans-serif; background: #f2f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        
+        /* 💡 [변경] 가로폭을 360px에서 400px로 넓혀 텍스트 공간을 충분히 확보했습니다. */
         .register-container { 
-            background-color: #ffffff; 
+            background: #fff; 
             padding: 48px 40px; 
             border-radius: 24px; 
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.03); 
-            width: 360px; 
-            box-sizing: border-box;
-        }
-
-        /* 타이틀 스타일 */
-        h2 { 
-            margin: 0 0 32px 0; 
-            color: #191f28; 
-            font-size: 24px; 
-            font-weight: 700;
-            text-align: left;
-            line-height: 1.4;
-        }
-        
-        .input-group {
-            margin-bottom: 12px;
-        }
-
-        /* 입력 폼 및 선택창 공통 스타일 */
-        input, select { 
-            width: 100%; 
-            padding: 16px; 
-            background-color: #f9fafb;
-            border: 1px solid transparent; 
-            border-radius: 12px; 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.03); 
+            width: 400px; 
             box-sizing: border-box; 
-            font-size: 15px; 
-            color: #191f28;
-            outline: none; 
-            transition: all 0.2s ease;
-            /* select 태그의 기본 화살표 스타일을 세련되게 다듬기 위한 설정 */
-            appearance: none;
-            -webkit-appearance: none;
-        }
-
-        /* select 태그용 화살표 아이콘 배경 추가 (옵션) */
-        select {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 16px;
-            cursor: pointer;
-        }
-
-        input:hover, select:hover {
-            background-color: #f2f4f6;
-        }
-
-        input:focus, select:focus { 
-            background-color: #ffffff;
-            border-color: #3182f6; 
-            box-shadow: 0 0 0 1px #3182f6;
-        }
-
-        /* 토스 시그니처 블루 버튼 */
-        button[type="submit"] { 
-            width: 100%; 
-            padding: 16px; 
-            background-color: #3182f6; 
-            color: #ffffff; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            box-shadow: 0 4px 12px rgba(49, 130, 246, 0.2);
-            transition: all 0.2s ease; 
-            margin-top: 12px;
-        }
-
-        button[type="submit"]:hover { 
-            background-color: #1b64da; 
-            box-shadow: 0 6px 16px rgba(49, 130, 246, 0.3);
-        }
-
-        button[type="submit"]:active {
-            transform: scale(0.98);
         }
         
-        /* 하단 링크 영역 */
-        .links { 
-            margin-top: 28px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            font-size: 13px; 
-        }
-
-        .links a { 
-            color: #4e5968; 
-            text-decoration: none; 
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-
-        .links a:hover { 
-            color: #3182f6; 
-        }
+        h2 { margin: 0 0 32px 0; color: #191f28; font-size: 24px; font-weight: 700; }
+        .input-group { position: relative; margin-bottom: 12px; }
+        input, select { width: 100%; padding: 16px; background: #f9fafb; border: 1px solid transparent; border-radius: 12px; box-sizing: border-box; font-size: 15px; outline: none; }
+        input:focus, select:focus { background: #fff; border-color: #3182f6; box-shadow: 0 0 0 1px #3182f6; }
+        .toggle-btn { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #8b95a1; cursor: pointer; font-size: 13px; user-select: none; }
+        .password-message { font-size: 12px; margin: -6px 0 12px 6px; text-align: left; display: none; font-weight: 500; }
+        button { width: 100%; padding: 16px; background: #3182f6; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+        button:active { transform: scale(0.98); }
+        .links { margin-top: 28px; text-align: center; font-size: 13px; }
+        .links a { color: #4e5968; text-decoration: none; }
     </style>
 </head>
 <body>
     <div class="register-container">
-        <h2>회원가입을 환영합니다</h2>
-        
+        <h2>환영합니다</h2>
         <form id="registerForm">
-            <!-- 이름 입력창 -->
-            <div class="input-group">
-                <input type="text" id="regName" placeholder="이름" required>
-            </div>
-
-            <!-- 본인확인 질문 선택창 (오타 교정 및 클래스명 통일) -->
+            <div class="input-group"><input type="text" id="regName" placeholder="이름" required></div>
             <div class="input-group">
                 <select id="question" required>
-                    <option value="" disabled selected>본인확인 질문을 선택해주세요</option>
+                    <option value="" disabled selected>본인확인 질문 선택</option>
                     <option value="q1">가장 기억에 남는 선생님 성함은?</option>
                     <option value="q2">처음 키웠던 반려동물의 이름은?</option>
                     <option value="q3">받았던 선물 중 가장 기억에 남는 것은?</option>
                     <option value="q4">가장 좋아하는 색깔은?</option>
-                    <option value="q5">자신의 보물 제1호는?</option>
-                    <option value="q6">자신의 인생 좌우명은?</option>
-                    <option value="q7">가장 좋아하는 음식은?</option>
-                    <option value="q8">어렸을 때 별명은?</option>
-                    <option value="q9">처음 입학한 학교의 이름은?</option>
-                    <option value="q10">인생에서 가장 기억에 남는 여행지는?</option>
-                    <option value="q11">가장 즐겨듣는 음악의 제목은?</option>
                 </select>
             </div>
-
-            <!-- 답변 입력 칸 추가 (클래스명 통일 및 레이아웃 최적화) -->
-            <div class="input-group">
-                <input type="text" id="answer" placeholder="질문에 대한 답변을 입력하세요" required>
-            </div>
-
-            <!-- 이메일 입력창 -->
-            <div class="input-group">
-                <input type="email" id="regEmail" placeholder="이메일 주소" required>
-            </div>
+            <div class="input-group"><input type="text" id="answer" placeholder="질문 답변 입력" required></div>
+            <div class="input-group"><input type="email" id="regEmail" placeholder="이메일 주소" required></div>
             
-            <!-- 비밀번호 입력창 -->
+            <!-- 가로폭이 넓어져서 이제 원래 긴 글자도 잘림 없이 깔끔하게 수용합니다. -->
             <div class="input-group">
-                <input type="password" id="regPassword" placeholder="비밀번호 (8자 이상)" minlength="8" required>
+                <input type="password" id="regPassword" style="padding-right:65px;" placeholder="비밀번호 (8자 이상, 문자/숫자/특수문자 조합)" required>
+                <span class="toggle-btn" id="toggleRegPassword">보기</span>
             </div>
-
-            <!-- 비밀번호 확인 입력창 -->
-            <div class="input-group">
-                <input type="password" id="regPasswordConfirm" placeholder="비밀번호 확인" required>
-            </div>
+            <div id="passwordMsg" class="password-message"></div>
             
+            <div class="input-group">
+                <input type="password" id="regPasswordConfirm" style="padding-right:65px;" placeholder="비밀번호 확인" required>
+                <span class="toggle-btn" id="toggleConfirmPassword">보기</span>
+            </div>
             <button type="submit">회원가입하기</button>
         </form>
-        
-        <div class="links">
-            <a href="index.html">이미 계정이 있으신가요? 로그인</a>
-        </div>
+        <div class="links"><a href="index.html">이미 계정이 있으신가요? 로그인</a></div>
     </div>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault(); 
-        
-        const name = document.getElementById('regName').value.trim();
-        const question = document.getElementById('question').value;
-        const answer = document.getElementById('answer').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPassword').value;
-        const passwordConfirm = document.getElementById('regPasswordConfirm').value;
-        
-        if (!question) {
-            alert('본인확인 질문을 선택해 주세요.');
-            return;
-        }
-
-        if (password !== passwordConfirm) {
-            alert('비밀번호가 서로 일치하지 않습니다. 다시 확인해 주세요.');
-            return;
-        }
-        
-        // [가상 가입 로직] 가입 정보를 하나의 객체로 만듭니다.
-        const userData = {
-            name: name,
-            email: email,
-            password: password,
-            question: question,
-            answer: answer
+        const setupToggle = (tId, iId) => {
+            document.getElementById(tId).addEventListener('click', function() {
+                const input = document.getElementById(iId);
+                input.type = input.type === 'password' ? 'text' : 'password';
+                this.textContent = input.type === 'password' ? '보기' : '숨기기';
+            });
         };
+        setupToggle('toggleRegPassword', 'regPassword');
+        setupToggle('toggleConfirmPassword', 'regPasswordConfirm');
 
-        // 로컬 스토리지에 이메일을 키(Key)로 사용하여 회원 정보를 문자열로 가상 저장합니다.
-        localStorage.setItem(`user_${email}`, JSON.stringify(userData));
-        
-        // 대시보드에서 이름 연동을 쉽게 하기 위해 '현재 로그인할 유저의 기본 이름'도 세팅합니다.
-        localStorage.setItem('userNickname', name);
+        const pInput = document.getElementById('regPassword');
+        const pMsg = document.getElementById('passwordMsg');
+        let isPassValid = false;
 
-        alert(`${name}님, 회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.`);
-        window.location.href = 'index.html'; 
-    });
+        pInput.addEventListener('input', function() {
+            const v = this.value;
+            pMsg.style.display = v ? "block" : "none";
+            
+            isPassValid = v.length >= 8 && /[A-Za-z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v);
+            pMsg.textContent = isPassValid ? "✅ 안전한 비밀번호입니다." : "❌ 8자 이상 영문/숫자/특수문자를 조합하세요.";
+            pMsg.style.color = isPassValid ? "#2da44e" : "#f04452";
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            if (localStorage.getItem(`user_${email}`)) return alert('이미 가입된 이메일 주소입니다.');
+            if (!isPassValid) return alert('비밀번호 보안 규칙을 준수해 주세요.');
+            if (password !== document.getElementById('regPasswordConfirm').value) return alert('비밀번호가 일치하지 않습니다.');
+
+            const userData = {
+                name: document.getElementById('regName').value.trim(),
+                email: email, password: password,
+                question: document.getElementById('question').value,
+                answer: document.getElementById('answer').value.trim()
+            };
+
+            localStorage.setItem(`user_${email}`, JSON.stringify(userData));
+            localStorage.setItem('userNickname', userData.name);
+            alert(`${userData.name}님, 가입이 완료되었습니다!`);
+            window.location.href = 'index.html';
+        });
     </script>
 </body>
 </html>
