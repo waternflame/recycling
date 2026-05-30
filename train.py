@@ -105,8 +105,8 @@ class CanPetDataset(Dataset):
 def load_data(base_path):
     """
     폴더에서 이미지 로드
-    dataset/0/ → 캔 (label=0)
-    dataset/1/ → 패트 (label=1)
+    dataset/0/ -> 캔 (학습용 내부 label=0)
+    dataset/1/ -> 패트 (학습용 내부 label=1)
     """
     images = []
     labels = []
@@ -226,8 +226,9 @@ if __name__ == "__main__":
     
     print(f"\n✅ 총 {len(X_train)}장 로드됨")
     y_flat = y_train.flatten()
-    print(f"   캔(0): {int(sum(y_flat == 0))}장")
-    print(f"   패트(1): {int(sum(y_flat == 1))}장\n")
+    print(f"   캔(학습 0): {int(sum(y_flat == 0))}장")
+    print(f"   패트(학습 1): {int(sum(y_flat == 1))}장")
+    print("   서비스 반환코드: unknown=0, 캔=1, 패트=2\n")
     
     # 훈련/검증 분할
     X_train_split, X_val, y_train_split, y_val = train_test_split(
