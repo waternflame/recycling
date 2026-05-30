@@ -9,7 +9,6 @@
         .dashboard-layout { width: 100%; max-width: 400px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
         .dashboard-card { background: #fff; border-radius: 24px; padding: 28px 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: space-between; width: 100%; border: none; outline: none; text-align: left; }
         
-        /* 💡 프로필 및 아바타 전용 미니멀 스타일 */
         .profile-info { display: flex; align-items: center; gap: 16px; }
         .profile-img { width: 60px; height: 60px; border-radius: 50%; background: #e8f3ff; display: flex; justify-content: center; align-items: center; font-size: 32px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); user-select: none; }
         .profile-text .name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
@@ -21,11 +20,32 @@
         .btn-card:hover { background: #f9fafb; transform: translateY(-1px); }
         .arrow-icon { font-size: 18px; font-weight: 700; color: #4e5968; }
 
-        /* 💡 아바타 선택용 초간결 모달 스타일 */
+        /* 아바타 선택용 모달 스타일 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #fff; padding: 32px; border-radius: 24px; width: 340px; text-align: center; }
-        .avatar-list { display: flex; justify-content: center; gap: 16px; margin: 20px 0; font-size: 36px; }
-        .avatar-item { width: 55px; height: 55px; display: flex; justify-content: center; align-items: center; background: #f2f4f6; border-radius: 50%; cursor: pointer; }
+        
+        /* 💡 [변경] 8개 아이콘이 4개씩 2줄로 깔끔하게 떨어지도록 flex-wrap 설정 */
+        .avatar-list { 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            gap: 16px; 
+            margin: 20px 0; 
+            font-size: 36px; 
+        }
+        /* 💡 4개씩 균등 분할 배치를 위해 너비(width) 고정값 부여 */
+        .avatar-item { 
+            width: 55px; 
+            height: 55px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: #f2f4f6; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            transition: all 0.2s;
+        }
+        .avatar-item:hover { background: #e8f3ff; transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -36,8 +56,8 @@
             <div class="profile-info">
                 <div class="profile-img" id="profileImg">🦁</div>
                 <div class="profile-text">
-                    <div class="name">홍길동</div>
-                    <div class="welcome">프로필을 눌러 변경해보세요</div>
+                    <div class="name">회원님</div>
+                    <div class="welcome">동물 아이콘을<br>클릭해보세요</div>
                 </div>
             </div>
             <button onclick="handleLogout()" style="background:none; border:none; color:#8b95a1; cursor:pointer; font-weight:500;">로그아웃</button>
@@ -45,8 +65,8 @@
 
         <!-- 2. 내 적립 포인트 -->
         <section class="dashboard-card">
-            <span class="card-title">내 적립 포인트</span>
-            <span class="point-amount">1,250 P</span>
+            <span class="card-title">나의 적립 포인트</span>
+            <span class="point-amount">1,004 P</span>
         </section>
 
         <!-- 3. 각종 정보 변경 메뉴 이동 버튼 -->
@@ -68,11 +88,16 @@
     <div id="avatarModal" class="modal">
         <div class="modal-content">
             <h3 style="color:#191f28;">캐릭터 선택</h3>
+            <!-- 8가지 동물 캐릭터 라인업 구축 -->
             <div class="avatar-list">
                 <span class="avatar-item">🦁</span>
+                <span class="avatar-item">🐯</span>
+                <span class="avatar-item">🐻‍❄️</span>
+                <span class="avatar-item">🦛</span>
                 <span class="avatar-item">🐱</span>
-                <span class="avatar-item">🦊</span>
-                <span class="avatar-item">🐻</span>
+                <span class="avatar-item">🐶</span>
+                <span class="avatar-item">🐹</span>
+                <span class="avatar-item">🐋</span>
             </div>
             <button onclick="document.getElementById('avatarModal').style.display='none'" style="width:100%; padding:14px; background:#3182f6; color:#fff; border:none; border-radius:12px; font-weight:600; cursor:pointer;">닫기</button>
         </div>
@@ -82,19 +107,29 @@
         const pImg = document.getElementById('profileImg');
         const modal = document.getElementById('avatarModal');
 
-        // 데이터 복원 로직
+        // 💡 [보안 가드막 추가] 페이지가 로드될 때 로그인 상태를 가장 먼저 검증합니다.
         window.addEventListener('DOMContentLoaded', () => {
+            const loginStatus = localStorage.getItem('isLoggedIn');
+
+            // 로그인 증명서가 없다면 즉시 차단
+            if (loginStatus !== 'true') {
+                alert('로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.');
+                window.location.href = 'index.html'; // 로그인창으로 강제 추방
+                return; // 아래 코드들이 실행되지 않도록 차단
+            }
+
+            // 정상 로그인 유저인 경우에만 아래 데이터 복원 로직 실행
             const savedName = localStorage.getItem('userNickname');
             if (savedName) document.querySelector('.profile-text .name').textContent = savedName;
-            
+        
             const savedAvatar = localStorage.getItem('userAvatar');
             if (savedAvatar) pImg.textContent = savedAvatar;
         });
 
-        // 💡 [압축] 프로필 클릭 시 창 띄우기
+        // 프로필 클릭 시 창 띄우기
         pImg.addEventListener('click', () => modal.style.display = 'flex');
 
-        // 💡 [압축] 이모지 선택 시 실시간 저장 및 교체 처리 (이벤트 위임 방식)
+        // 이모지 선택 시 실시간 저장 및 교체 처리 (이벤트 위임)
         document.querySelector('.avatar-list').addEventListener('click', (e) => {
             if (e.target.classList.contains('avatar-item')) {
                 const emoji = e.target.textContent;
@@ -104,8 +139,14 @@
             }
         });
 
+        // 💡 로그아웃 기능 고도화
         function handleLogout() {
-            if (confirm('로그아웃 하시겠습니까?')) window.location.href = 'index.html';
+            if (confirm('로그아웃 하시겠습니까?')) {
+                // [보안 추가] 로그아웃 시 브라우저에 남아있던 로그인 증명서를 완전히 파기합니다.
+                localStorage.removeItem('isLoggedIn'); 
+            
+                window.location.href = 'index.html';
+            }
         }
     </script>
 </body>
