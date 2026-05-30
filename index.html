@@ -27,7 +27,7 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>계정으로<br>로그인하기</h2>
+        <h2>회원 계정으로<br>로그인하기</h2>
         
         <form id="loginForm">
             <div class="input-group">
@@ -57,13 +57,9 @@
     const passwordInput = document.getElementById('loginPassword');
 
     togglePassword.addEventListener('click', function () {
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            this.textContent = '숨기기';
-        } else {
-            passwordInput.type = 'password';
-            this.textContent = '보기';
-        }
+        input = passwordInput;
+        input.type = input.type === 'password' ? 'text' : 'password';
+        this.textContent = input.type === 'password' ? '보기' : '숨기기';
     });
 
     // 로그인 제출 및 가상 검증 로직
@@ -73,7 +69,6 @@
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value;
         
-        // 💡 실시간으로 로컬 스토리지의 가장 최신 회원 상태를 조회합니다.
         const storedUserRaw = localStorage.getItem(`user_${email}`);
         
         if (!storedUserRaw) {
@@ -83,11 +78,11 @@
 
         const userData = JSON.parse(storedUserRaw);
 
-        // 변경된 비밀번호와 실시간으로 대조합니다.
         if (password === userData.password) {
-            alert(`${userData.name}님, 환영합니다! 메인 화면으로 이동합니다.`);
+            alert(`${userData.name}님, 환영합니다!`);
             
-            // 로그인 상태에 따른 이름 표시를 위해 유저명을 메모리에 업데이트합니다.
+            // 💡 [보안 추가] 로그인 성공 증명서(토큰 역할)를 로컬 스토리지에 저장합니다.
+            localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userNickname', userData.name);
             
             window.location.href = 'main.html'; 
