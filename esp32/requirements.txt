@@ -8,3 +8,4 @@ opencv-python
 pillow
 paho-mqtt
 requests
+pymysql

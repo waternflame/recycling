@@ -5,14 +5,21 @@ import torch.nn as nn
 import cv2
 import numpy as np
 from PIL import Image
-from tqdm import tqdm
-import shutil
+from typing import Any
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
 
 # GPU 확인
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = str(BASE_DIR / 'can_pet_model.pth')
 loaded_model = None
+app = FastAPI(title="ESP32 AI Inference Service")
+
+
+class PredictRequest(BaseModel):
+    image_path: str = Field(..., description="분류할 이미지 경로")
 
 # ============================================
 # 1. CNN 모델 정의
@@ -56,6 +63,7 @@ class CanPetCNN(nn.Module):
 # ============================================
 # 2. 모델 로드
 # ============================================
+# 역할: 지정한 경로에서 모델을 1회 로드해 평가 모드로 준비한다.
 def load_model(model_path):
     model = CanPetCNN().to(device)
     try:
@@ -66,6 +74,7 @@ def load_model(model_path):
         return None
 
 
+# 역할: 전역 캐시를 사용해 모델을 지연 로드하고 재사용한다.
 def get_model():
     global loaded_model
     if loaded_model is None:
@@ -80,6 +89,7 @@ def get_model():
 # ============================================
 # 3. 이미지 전처리 (흑백만)
 # ============================================
+# 역할: 입력 이미지를 모델 입력 형식(1x1x64x64)으로 변환한다.
 def preprocess_image_for_test(img_path):
     """
     이미지를 흑백으로만 전처리
@@ -101,6 +111,7 @@ def preprocess_image_for_test(img_path):
 # ============================================
 # 4. 추론 함수
 # ============================================
+# 역할: 전처리된 이미지를 분류해 서비스 코드(0/1/2)와 신뢰도를 반환한다.
 def classify_image(model, img_path, confidence_threshold=0.5):
     """
     이미지 분류
@@ -133,7 +144,8 @@ def classify_image(model, img_path, confidence_threshold=0.5):
         else:
             return 0, confidence_diff
 
-
+# ============================================
+# 역할: 단일 이미지 경로를 받아 모델 추론 결과 코드만 반환한다.
 def predict_now(img_path):
     model = get_model()
     if model is None:
@@ -143,10 +155,25 @@ def predict_now(img_path):
 
     return int(label)
 
-
+# 역할: 파일을 분류해 결과 코드(0/1/2)를 반환한다.
 def analyze_image_for_motor(img_path: str) -> int:
     if not os.path.exists(img_path):
         return 0
-    return predict_now(img_path)
+    return int(predict_now(img_path))
+
+# FastAPI 엔드포인트 정의
+# 역할: 외부 요청으로 받은 이미지 경로를 추론해 JSON 결과로 응답한다.
+@app.post("/predict")
+def predict(req: PredictRequest) -> dict[str, int]:
+    try:
+        return {"result": int(analyze_image_for_motor(req.image_path))}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"predict failed: {exc}") from exc
+
+
+# 역할: 서비스 생존 여부를 확인하는 헬스체크 엔드포인트다.
+@app.get("/health")
+def health() -> dict[str, Any]:
+    return {"ok": True}
 
 
