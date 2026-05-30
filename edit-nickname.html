@@ -36,7 +36,14 @@
     </div>
 
     <script>
+        // 💡 [보안 가드막] 로그인 안 한 유저 강제 추방
         window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                alert('로그인이 필요한 서비스입니다.');
+                window.location.href = 'index.html';
+                return;
+            }
+            
             const savedNickname = localStorage.getItem('userNickname');
             if (savedNickname) { document.getElementById('newNickname').placeholder = `현재 닉네임: ${savedNickname}`; }
         });
@@ -46,7 +53,7 @@
             const nickname = document.getElementById('newNickname').value.trim();
             
             localStorage.setItem('userNickname', nickname);
-            alert(`닉네임이 [${nickname}](으)로 성공적으로 변경되었습니다.`);
+            alert(`닉네임이 [${nickname}](으)로 변경되었습니다.`);
             window.location.href = 'main.html'; 
         });
     </script>
